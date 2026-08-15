@@ -21,13 +21,13 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Storm Chaser uses the camera to document storms you observe."
+          "cameraPermission": "Storm Chaser uses the camera"
         }
       ],
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Storm Chaser uses your location to fetch local weather and tag storm entries."
+          "locationWhenInUsePermission": "Storm Chaser uses your location to fetch local weather"
         }
       ]
     ]

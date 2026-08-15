@@ -26,6 +26,8 @@ interface OpenMeteoResponse {
 
 export class WeatherFetchError extends Error {}
 
+const REQUEST_TIMEOUT_MS = 15000;
+
 export async function fetchCurrentWeather(
   latitude: number,
   longitude: number
@@ -40,11 +42,19 @@ export async function fetchCurrentWeather(
     timezone: 'auto',
   });
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
   let response: Response;
   try {
-    response = await fetch(`${BASE_URL}?${params.toString()}`);
+    response = await fetch(`${BASE_URL}?${params.toString()}`, { signal: controller.signal });
   } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new WeatherFetchError('Weather request timed out. Check your connection and try again.');
+    }
     throw new WeatherFetchError('Unable to reach the weather service. Check your connection.');
+  } finally {
+    clearTimeout(timeout);
   }
 
   if (!response.ok) {

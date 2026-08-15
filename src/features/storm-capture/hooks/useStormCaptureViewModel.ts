@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useCurrentLocation } from '../../../shared/hooks/useCurrentLocation';
 import { fetchCurrentWeather } from '../../../features/weather/services/weatherApi';
 import { describeWeatherCode } from '../../../shared/utils/weatherCodes';
@@ -35,6 +35,12 @@ export function useStormCaptureViewModel() {
   const [capturedAt, setCapturedAt] = useState<string | null>(null);
   const [form, setForm] = useState<CaptureFormState>(initialForm);
   const [saving, setSaving] = useState(false);
+  const isMounted = useRef(true);
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const capturePhoto = useCallback(
     async (uri: string) => {
@@ -49,6 +55,7 @@ export function useStormCaptureViewModel() {
       setForm((prev) => ({ ...prev, weatherLoading: true, weatherError: null }));
       try {
         const snapshot = await fetchCurrentWeather(coords.latitude, coords.longitude);
+        if (!isMounted.current) return;
         setForm((prev) => ({
           ...prev,
           temperatureC: snapshot.current.temperatureC,
@@ -58,6 +65,7 @@ export function useStormCaptureViewModel() {
           weatherLoading: false,
         }));
       } catch (err) {
+        if (!isMounted.current) return;
         setForm((prev) => ({
           ...prev,
           weatherLoading: false,

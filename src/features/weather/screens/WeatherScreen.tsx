@@ -11,7 +11,7 @@ import { WeatherStat } from '../components/WeatherStat';
 
 export function WeatherScreen() {
   const colors = useThemeColors();
-  const { snapshot, loading, refreshing, notFound, errorMessage, locationStatus, refresh, retry } =
+  const { snapshot, loading, refreshing, notFound, errorMessage, locationStatus, locationError, refresh, retry } =
     useWeatherViewModel();
 
   if (locationStatus === 'denied') {
@@ -21,6 +21,19 @@ export function WeatherScreen() {
           title="Location access needed"
           message="Storm Chaser needs your location to fetch current conditions. Enable location permissions and try again."
           actionLabel="Try again"
+          onAction={retry}
+        />
+      </ScreenContainer>
+    );
+  }
+
+  if (locationStatus === 'error' && !snapshot) {
+    return (
+      <ScreenContainer>
+        <EmptyState
+          title="Couldn't get your location"
+          message={locationError ?? 'Unable to determine your location right now.'}
+          actionLabel="Retry"
           onAction={retry}
         />
       </ScreenContainer>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useCurrentLocation } from '../../../shared/hooks/useCurrentLocation';
 import { fetchCurrentWeather, WeatherFetchError } from '../services/weatherApi';
 import type { WeatherSnapshot } from '../../../shared/types/weather';
@@ -22,6 +22,12 @@ export function useWeatherViewModel() {
     notFound: false,
     errorMessage: null,
   });
+  const isMounted = useRef(true);
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const loadWeather = useCallback(async (latitude: number, longitude: number, isRefresh = false) => {
     setState((prev) => ({
@@ -32,8 +38,10 @@ export function useWeatherViewModel() {
     }));
     try {
       const snapshot = await fetchCurrentWeather(latitude, longitude);
+      if (!isMounted.current) return;
       setState({ snapshot, loading: false, refreshing: false, notFound: false, errorMessage: null });
     } catch (err) {
+      if (!isMounted.current) return;
       const message = err instanceof WeatherFetchError ? err.message : 'Something went wrong fetching weather data.';
       setState({ snapshot: null, loading: false, refreshing: false, notFound: true, errorMessage: message });
     }
