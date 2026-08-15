@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "Storm Chaser",
+    "slug": "storm-chaser-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Storm Chaser uses the camera",
+        "NSLocationWhenInUseUsageDescription": "Storm Chaser uses your location to fetch local weather"
+      }
+    },
+    "android": {
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["CAMERA", "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
+    },
+    "plugins": [
+      "expo-sqlite",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Storm Chaser uses the camera to document storms you observe."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Storm Chaser uses your location to fetch local weather and tag storm entries."
+        }
+      ]
+    ]
+  }
+}
