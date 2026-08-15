@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -17,6 +16,7 @@ import { Card } from '../../../shared/components/Card';
 import { EmptyState } from '../../../shared/components/EmptyState';
 import { LabeledInput } from '../../../shared/components/LabeledInput';
 import { spacing, radii, useThemeColors } from '../../../shared/theme';
+import { showAlert } from '../../../shared/utils/alert';
 import { useStormCaptureViewModel } from '../hooks/useStormCaptureViewModel';
 import { StormTypePicker } from '../components/StormTypePicker';
 
@@ -80,7 +80,7 @@ export function StormCaptureScreen() {
                 await capturePhoto(photo.uri);
               }
             } catch (err) {
-              Alert.alert('Capture failed', 'Could not take photo. Please try again.');
+              showAlert('Capture failed', 'Could not take photo. Please try again.');
             } finally {
               setCapturing(false);
             }
@@ -164,7 +164,7 @@ export function StormCaptureScreen() {
               onPress={async () => {
                 const entry = await save();
                 if (entry) {
-                  Alert.alert('Saved', 'Storm entry saved to your log.');
+                  showAlert('Saved', 'Storm entry saved to your log.');
                 }
               }}
             >

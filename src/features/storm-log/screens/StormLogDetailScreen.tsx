@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ScreenContainer } from '../../../shared/components/ScreenContainer';
 import { Card } from '../../../shared/components/Card';
 import { spacing, radii, useThemeColors } from '../../../shared/theme';
 import { getStormEntryById } from '../../../shared/db/stormRepository';
+import { showConfirm } from '../../../shared/utils/alert';
 import type { StormEntry } from '../../../shared/types/storm';
 import type { StormLogStackParamList } from '../../../shared/navigation/types';
 import { useStormLogViewModel } from '../hooks/useStormLogViewModel';
@@ -66,17 +67,10 @@ export function StormLogDetailScreen({ route, navigation }: Props) {
         <TouchableOpacity
           style={[styles.deleteButton, { borderColor: colors.danger }]}
           onPress={() =>
-            Alert.alert('Delete entry', 'This cannot be undone.', [
-              { text: 'Cancel', style: 'cancel' },
-              {
-                text: 'Delete',
-                style: 'destructive',
-                onPress: async () => {
-                  await removeEntry(entry.id);
-                  navigation.goBack();
-                },
-              },
-            ])
+            showConfirm('Delete entry', 'This cannot be undone.', 'Delete', async () => {
+              await removeEntry(entry.id);
+              navigation.goBack();
+            })
           }
         >
           <Text style={{ color: colors.danger, fontWeight: '700' }}>Delete Entry</Text>
